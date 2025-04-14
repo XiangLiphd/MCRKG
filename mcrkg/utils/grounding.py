@@ -14,12 +14,11 @@ __all__ = ['create_matcher_patterns', 'ground']
 
 # the lemma of it/them/mine/.. is -PRON-
 
-# blacklist = set(["-PRON-", "actually", "likely", "possibly", "want",
-#                  "make", "my", "someone", "sometimes_people", "sometimes", "would", "want_to",
-#                  "one", "something", "sometimes", "everybody", "somebody", "could", "could_be"
+# blacklist = set(["-PRON-", "my", "someone", "sometimes_people", "sometimes",
+#                  "one", "something", "sometimes", "everybody", "somebody"
 #                  ])
 
-blacklist = set(["它/他/她（代词）", "实际上", "可能", "可能地", "想要", "制造/做", "我的", "某人", "有时候人们", "有时候", "将会", "想要", "一个", "某事", "每个人", "某人", "可能", "可能是"])
+blacklist = set(["它/他/她（代词）", "我的", "某人",  "一个", "某事", "每个人", "某人"])
 
 nlp = spacy.load('zh_core_web_sm')
 nltk_stopwords = nlp.Defaults.stop_words
