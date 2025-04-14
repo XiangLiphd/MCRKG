@@ -4,7 +4,7 @@ export CUDA_VISIBLE_DEVICES=0
 dt=`date '+%Y%m%d_%H%M%S'`
 
 
-dataset="ele_data"
+dataset="ele_data2"
 model='chinese-roberta-wwm'
 shift
 shift
