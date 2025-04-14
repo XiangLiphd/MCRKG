@@ -15,19 +15,17 @@ except ImportError:
     from utils import check_file
 
 # __all__ = ['extract_english', 'construct_graph', 'merged_relations', 'extract_chinese', 'construct_chinese_graph' ]
-__all__ = ['动作', '原因', '表现','存在']
+__all__ = ['原因', '表现','存在']
 relation_groups = []
 
 
 merged_relations = [
-    '动作', 
     '原因', 
     '表现',
     '存在'
 ]
 
 relation_text = [
-    '动作', 
     '原因', 
     '表现',
     '存在'
