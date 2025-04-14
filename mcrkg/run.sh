@@ -13,10 +13,10 @@ dlr="1e-3"
 bs=128
 mbs=2
 n_epochs=200
-num_relation=46
+num_relation=4
 
 seed=42
-k=7 #num of gnn layers
+k=4 #num of gnn layers
 gnndim=200
 
 echo "***** hyperparameters *****"
