@@ -13,7 +13,7 @@ dlr="1e-3"
 bs=128
 mbs=2
 n_epochs=200
-num_relation=4
+num_relation=3
 
 seed=42
 k=4 #num of gnn layers
