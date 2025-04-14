@@ -82,7 +82,7 @@ def create_matcher_patterns(cpnet_vocab_path, output_path, debug=False):
 
         if pattern is None:
             continue
-        # all_patterns["_".join(doc.text.split(" "))] = pattern  # 英文
+        # all_patterns["_".join(doc.text.split(" "))] = pattern 
         text = convert(doc.text.replace(' ', ''), "zh-hans")
         all_patterns["_".join(jieba.lcut(text))] = pattern
 
@@ -313,15 +313,6 @@ def prune(data, cpnet_vocab_path):
             assert len(prune_ac) > 0 and len(prune_qc) > 0
         except Exception as e:
             pass
-            # print("In pruning")
-            # print(prune_qc)
-            # print(prune_ac)
-            # print("original:")
-            # print(qc)
-            # print(ac)
-            # print()
-        item["qc"] = prune_qc
-        item["ac"] = prune_ac
 
         prune_data.append(item)
     return prune_data
@@ -345,12 +336,6 @@ def ground(statement_path, cpnet_vocab_path, pattern_path, output_path, num_proc
         if line == "":
             continue
         j = json.loads(line)
-        # {'answerKey': 'B',
-        #   'id': 'b8c0a4703079cf661d7261a60a1bcbff',
-        #   'question': {'question_concept': 'magazines',
-        #                 'choices': [{'label': 'A', 'text': 'doctor'}, {'label': 'B', 'text': 'bookstore'}, {'label': 'C', 'text': 'market'}, {'label': 'D', 'text': 'train station'}, {'label': 'E', 'text': 'mortuary'}],
-        #                 'stem': 'Where would you find magazines along side many other printed works?'},
-        #   'statements': [{'label': False, 'statement': 'Doctor would you find magazines along side many other printed works.'}, {'label': True, 'statement': 'Bookstore would you find magazines along side many other printed works.'}, {'label': False, 'statement': 'Market would you find magazines along side many other printed works.'}, {'label': False, 'statement': 'Train station would you find magazines along side many other printed works.'}, {'label': False, 'statement': 'Mortuary would you find magazines along side many other printed works.'}]}
 
         for statement in j["statements"]:
             sents.append(statement["statement"])
