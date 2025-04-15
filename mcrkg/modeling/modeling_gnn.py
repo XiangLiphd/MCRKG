@@ -408,8 +408,8 @@ class LM_GNN_DataLoader(object):
         print ('train_statement_path', train_statement_path)
 
         print ('train_statement_path', train_statement_path)
-        self.train_qids, self.train_labels, *self.train_encoder_data = load_input_tensors(train_statement_path, model_type, model_path, max_seq_length)
-        self.dev_qids, self.dev_labels, *self.dev_encoder_data = load_input_tensors(dev_statement_path, model_type, model_path, max_seq_length)
+        self.train_qids, self.train_labels, *self.train_encoder_data = load_input_tensors(train_statement_path, model_type, model_path, max_seq_length,'def')
+        self.dev_qids, self.dev_labels, *self.dev_encoder_data = load_input_tensors(dev_statement_path, model_type, model_path, max_seq_length,'def')
 
         num_choice = self.train_encoder_data[0].size(1)
         self.num_choice = num_choice
@@ -421,7 +421,7 @@ class LM_GNN_DataLoader(object):
         assert all(len(self.dev_qids) == len(self.dev_adj_data[0]) == x.size(0) for x in [self.dev_labels] + self.dev_encoder_data + self.dev_decoder_data)
 
         if test_statement_path is not None:
-            self.test_qids, self.test_labels, *self.test_encoder_data = load_input_tensors(test_statement_path, model_type, model_path, max_seq_length)
+            self.test_qids, self.test_labels, *self.test_encoder_data = load_input_tensors(test_statement_path, model_type, model_path, max_seq_length,'def')
             *self.test_decoder_data, self.test_adj_data = load_sparse_adj_data_with_contextnode(test_adj_path, max_node_num, num_choice, args)
             assert all(len(self.test_qids) == len(self.test_adj_data[0]) == x.size(0) for x in [self.test_labels] + self.test_encoder_data + self.test_decoder_data)
 
