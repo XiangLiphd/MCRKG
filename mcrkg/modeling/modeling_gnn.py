@@ -222,24 +222,22 @@ class GNN(nn.Module):
             module.weight.data.fill_(1.0)
 
     def _node_contrast(self, orig_nodes, pos_nodes, neg_nodes):
+        
+        orig = orig_nodes['vec']
+        pos = [p['vec'] for p in pos_nodes]
+        neg = [n['vec'] for n in neg_nodes]
+        
+        def nt_xent_loss(positive, negative, temperature):
+            pos_sim = F.cosine_similarity(positive, positive) / temperature
+            neg_sim = F.cosine_similarity(positive, negative) / temperature
 
-        def get_numeric_nodes(node_vecs, node_texts):
-            pattern = re.compile(r'^[\u4e00-\u9fa5]+\d+') 
-            masks = [re.match(pattern, text) is not None for text in node_texts]
-            return node_vecs[masks]
+            logits = torch.cat([pos_sim, neg_sim], dim=0)
+            labels = torch.zeros(logits.size(0), dtype=torch.long).to(logits.device)
+            return F.cross_entropy(logits, labels)
 
-        orig = get_numeric_nodes(orig_nodes['vec'], orig_nodes['text'])
-        pos = [get_numeric_nodes(n['vec'], n['text']) for n in pos_nodes]
-        neg = [get_numeric_nodes(n['vec'], n['text']) for n in neg_nodes]
-
-        loss = 0
-        for p in pos:
-            sim_matrix = F.cosine_similarity(orig.unsqueeze(1), p.unsqueeze(0), dim=-1)
-            loss += -torch.log(torch.exp(sim_matrix / self.temperature1).mean())
-        for n in neg:
-            sim_matrix = F.cosine_similarity(orig.unsqueeze(1), n.unsqueeze(0), dim=-1)
-            loss += -torch.log(1 - torch.exp(sim_matrix / self.temperature1).mean())
-        return loss / (len(pos) + len(neg))
+        node_loss = nt_xent_loss(orig, pos, self.temperature1)
+        node_loss += nt_xent_loss(orig, neg, self.temperature1)
+        return node_loss
 
     def _graph_contrast(self, orig_graph_vec, pos_graph_vecs, neg_graph_vecs):
         pos_sim = F.cosine_similarity(orig_graph_vec, pos_graph_vecs)
