@@ -224,7 +224,7 @@ class GNN(nn.Module):
     def _node_contrast(self, orig_nodes, pos_nodes, neg_nodes):
 
         def get_numeric_nodes(node_vecs, node_texts):
-            pattern = re.compile(r'^[\u4e00-\u9fa5]+\d+')   # 根据实际需求扩展模式
+            pattern = re.compile(r'^[\u4e00-\u9fa5]+\d+') 
             masks = [re.match(pattern, text) is not None for text in node_texts]
             return node_vecs[masks]
 
