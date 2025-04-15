@@ -625,7 +625,7 @@ class GATConvE(MessagePassing):
 
 from torch_geometric.nn import GATConv
 class ANAGATLayer(nn.Module):
-    def __init__(self, in_dim, out_dim, num_hops=2):  # 增加num_hops参数
+    def __init__(self, in_dim, out_dim, num_hops=2): 
         super().__init__()
         self.gat_layers = nn.ModuleList([
             GATConv(in_dim if i==0 else out_dim, out_dim, heads=1, concat=False)
