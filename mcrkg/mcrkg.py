@@ -270,7 +270,7 @@ def train(args):
 
 
         qids, labels, *input_data = batch_data
-        input_texts = [model.train_qid2text[qid] for qid in qids]  # 假设已建立qid到文本的映射
+        input_texts = [model.train_qid2text[qid] for qid in qids] 
 
         total_node_loss = 0.0
         total_graph_loss = 0.0
