@@ -69,7 +69,7 @@ class CaseRetriever(nn.Module):
 
         pos, neg = [], []
         for idx in indices:
-            if sims[idx] < 0.6: break
+            if sims[idx] < 0.8: break
             if self.case_db[idx]['label'] == query_label:
                 if len(pos) < topk: pos.append(self.case_db[idx])
             else:
