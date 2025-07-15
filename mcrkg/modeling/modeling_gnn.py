@@ -232,22 +232,43 @@ class GNN(nn.Module):
         neg = [get_numeric_nodes(n['vec'], n['text']) for n in neg_nodes]
         
         loss = 0
+        count = 0
         for p in pos:
-            sim_matrix = F.cosine_similarity(orig.unsqueeze(1), p.unsqueeze(0), dim=-1)
-            loss += -torch.log(torch.exp(sim_matrix / self.temperature).mean())
-        for n in neg:
-            sim_matrix = F.cosine_similarity(orig.unsqueeze(1), n.unsqueeze(0), dim=-1)
-            loss += -torch.log(1 - torch.exp(sim_matrix / self.temperature).mean())
-        return loss / (len(pos)+len(neg))
+            if len(p) == 0 or len(orig) == 0:
+                 continue
+            pos_sim = F.cosine_similarity(orig, p, dim=-1).mean()
+            neg_sims = []
+            for n in neg:
+                if len(n) == 0:
+                   continue
+                neg_sim = F.cosine_similarity(orig.unsqueeze(1), n.unsqueeze(0), dim=-1).mean()
+                neg_sims.append(torch.exp(neg_sim / self.temperature))
+        
+            if not neg_sims:
+                continue
+
+            pos_exp = torch.exp(pos_sim / self.temperature)
+            neg_exp_sum = torch.stack(neg_sims).sum()
+        
+            loss += -torch.log(pos_exp / (pos_exp + neg_exp_sum))
+            count += 1
+
+        return loss / (count if count > 0 else 1)
+    
 
     def _graph_contrast(self, orig_graph_vec, pos_graph_vecs, neg_graph_vecs):
-        pos_sim = F.cosine_similarity(orig_graph_vec, pos_graph_vecs)
-        neg_sim = F.cosine_similarity(orig_graph_vec, neg_graph_vecs)
+        
+        orig_graph_vec = orig_graph_vec.unsqueeze(0)  
 
-        logits = torch.cat([pos_sim, neg_sim]) / self.temperature2
-        labels = torch.arange(len(pos_sim)).to(orig_graph_vec.device)
+        pos_sim = F.cosine_similarity(orig_graph_vec, pos_graph_vecs)  
+        neg_sim = F.cosine_similarity(orig_graph_vec, neg_graph_vecs)  
 
-        return F.cross_entropy(logits, labels)
+        pos_exp = torch.exp(pos_sim / self.temperature2).sum()
+        neg_exp = torch.exp(neg_sim / self.temperature2).sum()
+
+        loss = -torch.log(pos_exp / (pos_exp + neg_exp))
+
+        return loss
 
 
     def forward(self, sent_vecs, concept_ids, node_type_ids, node_scores, adj_lengths, adj, emb_data=None, cache_output=False, return_contrastive=False):
